@@ -23,7 +23,7 @@ void Game::Reset()
 	for (int i = 0; i < 5; i++) {
 		brick[i].width = 10;
 		brick[i].height = 2;
-		brick[i].x_position = i * 10;
+		brick[i].x_position = (i * 16) + 4;
 		brick[i].y_position = 5;
 		brick[i].doubleThick = true;
 		brick[i].color = ConsoleColor::DarkCyan;
@@ -80,7 +80,6 @@ void Game::Render() const
 void Game::CheckCollision()
 {
 	// TODO #4 - Update collision to check all bricks
-	//for (int i = 0; i < 5; i++) {
 	for (auto it = brick.begin(); it != brick.end(); ) {
 		if (it._Ptr->Contains(ball.x_position + ball.x_velocity, ball.y_position + ball.y_velocity))
 		{

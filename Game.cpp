@@ -21,12 +21,14 @@ void Game::Reset()
 
 	// TODO #2 - Add this brick and 4 more bricks to the vector
 	for (int i = 0; i < 5; i++) {
-		brick[i].width = 10;
-		brick[i].height = 2;
-		brick[i].x_position = (i * 16) + 4;
-		brick[i].y_position = 5;
-		brick[i].doubleThick = true;
-		brick[i].color = ConsoleColor::DarkCyan;
+		Box newBrick;
+		newBrick.width = 10;
+		newBrick.height = 2;
+		newBrick.x_position = (i * 16) + 4;
+		newBrick.y_position = 5;
+		newBrick.doubleThick = true;
+		newBrick.color = ConsoleColor::DarkCyan;
+		bricks.push_back(newBrick);
 	}
 }
 
@@ -71,8 +73,8 @@ void Game::Render() const
 	ball.Draw();
 
 	// TODO #3 - Update render to render all bricks
-	for (const Box& brickie : brick)
-		brickie.Draw();
+	for (const Box& brick : bricks)
+		brick.Draw();
 
 	Console::Lock(false);
 }
@@ -80,21 +82,24 @@ void Game::Render() const
 void Game::CheckCollision()
 {
 	// TODO #4 - Update collision to check all bricks
-	for (auto it = brick.begin(); it != brick.end(); ) {
+	for (auto it = bricks.begin(); it != bricks.end(); ) {
 		if (it._Ptr->Contains(ball.x_position + ball.x_velocity, ball.y_position + ball.y_velocity))
 		{
 			it._Ptr->color = ConsoleColor(it._Ptr->color - 1);
 			ball.y_velocity *= -1;
 		}
 		// TODO #5 - If the ball hits the same brick 3 times (color == black), remove it from the vector
-		if (it._Ptr->color == ConsoleColor::Black)
-			it = brick.erase(it);
+		if (it._Ptr->color == ConsoleColor::DarkGreen)
+			it = bricks.erase(it);
 		else
 			it++;
 	}
 
 	// TODO #6 - If no bricks remain, pause ball and display (render) victory text with R to reset
-
+	if (bricks.empty()) {
+		ball.moving = false;
+		Console::WordWrap(10, 10, 10, "Victory! Prese R to reset.");
+	}
 
 	if (paddle.Contains(ball.x_position + ball.x_velocity, ball.y_velocity + ball.y_position))
 	{
